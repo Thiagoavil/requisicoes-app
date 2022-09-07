@@ -1,0 +1,111 @@
+<div class="container">
+  <div class="row">
+    <div class="col-12 col-md-10 col-lg-9 mx-auto">
+      <div class="btn-group mb-5" role="group" aria-label="Basic radio toggle button group">
+        <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off"
+          (click)="obterMinhasRequisicoes()">
+        <label class="btn btn-outline-primary" for="btnradio1">Minha requisições</label>
+
+        <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off"
+          (click)="obterRequisicoesDoMeuDepartamento()">
+        <label class="btn btn-outline-primary" for="btnradio2">Requisições para meu departamento</label>
+
+      </div>
+      <div class="text-center text-md-start">
+        <h1 class="fw-bold text-primary">Requisições</h1>
+      </div>
+
+      <div class="d-grid gap-2 d-md-block mt-3">
+        <button class="btn btn-primary me-md-1 col-md-2" type="button" (click)="gravar(modal)">
+          <i class="pi pi-plus me-2"></i>
+          Nova
+        </button>
+        <a class="btn btn-outline-primary col-md-2 ms-lg-2" role="button" routerLink="/painel">
+          <i class="pi pi-sign-out me-2"></i>Voltar</a>
+      </div>
+
+      <div class="mt-4">
+        <table class="table table-light table-striped table-hover">
+          <thead class="thead-dark text-center">
+            <tr>
+              <th>Abertura</th>
+              <th>Departamento</th>
+              <th>Descrição</th>
+              <th>Equipamento</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody class="text-center">
+            <tr *ngFor="let requisicao of (requisicoes$ | async)">
+              <td>{{ requisicao.dataCriacao}}</td>
+              <td>{{ requisicao.departamento?.nome }}</td>
+              <td>{{ requisicao.descricao }}</td>
+              <td>{{ requisicao.equipamento?.nome ? requisicao.equipamento?.nome : "—" }}</td>
+              <td class="d-grid d-md-block">
+                <button class="btn btn-primary me-0 me-md-1 mb-1 mb-md-auto" type="button"><i class="pi pi-pencil"
+                    (click)="gravar(modal, requisicao)"></i></button>
+                <button class="btn btn-outline-danger" type="button"><i class="pi pi-trash"
+                    (click)="excluir(requisicao)"></i></button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #modal let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title" id="modal-basic-title"> {{ tituloModal }} de Requisições</h4>
+      <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('fechar')"></button>
+    </div>
+    <div class="modal-body">
+      <form [formGroup]="form" (ngSubmit)="modal.close('gravar')">
+
+        <div class="form-group position-relative mb-3">
+          <label class="form-label" for="departamentoId">Departamento</label>
+          <ng-select class="custom" formControlName="departamentoId" [clearable]="false" [searchable]="false"
+            placeholder="Selecione um departamento"
+            [ngClass]="(departamentoId?.touched && departamentoId?.invalid) ? 'is-invalid' : ''">
+            <ng-option class="custom" *ngFor="let departamento of ( departamentos$ | async )" [value]="departamento.id">
+              {{ departamento.nome }}
+            </ng-option>
+          </ng-select>
+          <div class="invalid-tooltip" *ngIf="departamentoId?.touched && departamentoId?.invalid">
+            <span *ngIf="departamentoId?.errors?.['required']">É necessário um departamento.</span>
+          </div>
+        </div>
+
+
+        <div class="form-group position-relative mb-3">
+          <label class="form-label" for="descricao">Descrição</label>
+          <textarea class="form-control" type="text" formControlName="descricao"
+            placeholder="Ex.: Problema a ser resolvido."
+            [ngClass]="(descricao?.touched && descricao?.invalid) ? 'is-invalid' : ''">
+          </textarea>
+          <div class="invalid-tooltip" *ngIf="descricao?.touched && descricao?.invalid">
+            <span *ngIf="descricao?.errors?.['required']">É necessário um nome.</span>
+            <span *ngIf="descricao?.errors?.['minlength']">Mínimo de 25 caracteres.</span>
+          </div>
+        </div>
+
+        <div class="form-group position-relative mb-3">
+          <label class="form-label" for="equipamentoId">Equipamento</label>
+          <ng-select class="custom" formControlName="equipamentoId" [clearable]="false" [searchable]="false"
+            placeholder="Selecione um equipamento (Opcional)"
+            [ngClass]="(equipamentoId?.touched && equipamentoId?.invalid) ? 'is-invalid' : ''">
+            <ng-option class="custom" *ngFor="let equipamento of ( equipamentos$ | async )" [value]="equipamento.id">
+              {{ equipamento.nome }}
+            </ng-option>
+          </ng-select>
+        </div>
+
+        <div class=" modal-footer">
+          <button class="btn btn-outline-primary col-md-3" type="button"
+            (click)="modal.dismiss('fechar')">Cancelar</button>
+          <button class="btn btn-primary col-md-3" type="submit" [disabled]="this.form.invalid">Gravar</button>
+        </div>
+      </form>
+    </div>
+</ng-template>

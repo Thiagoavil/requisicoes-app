@@ -1,3 +1,5 @@
+@import '~ngx-toastr/toastr.css';
+
 .bg-color {
   background-color: #dbdbdb !important;
 }

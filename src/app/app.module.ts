@@ -15,10 +15,10 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { AuthenticationService } from './auth/services/authentication.service';
 import { PainelComponent } from './painel/painel.component';
 import { NavbarComponent } from './navbar/navbar.component';
-import { EquipamentoModule } from './equipamentos/equipamento.module';
-import { DepartamentoModule } from './departamentos/departamento.module';
 import { ToastrModule } from 'ngx-toastr';
 
+
+import { BrowserAnimationsModule}from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -36,12 +36,8 @@ import { ToastrModule } from 'ngx-toastr';
     AngularFireAuthModule,
     AngularFirestoreModule,
 
-    DepartamentoModule,
-
-    EquipamentoModule,
-
     ToastrModule.forRoot(),
-
+    BrowserAnimationsModule
 
   ],
   providers: [AuthenticationService],

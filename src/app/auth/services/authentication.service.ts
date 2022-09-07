@@ -13,6 +13,10 @@ export class AuthenticationService {
     this.usuarioLogado = auth.authState;
   }
 
+  public cadastrar(email:string, senha:string):Promise<firebase.auth.UserCredential>{
+    return this.auth.createUserWithEmailAndPassword(email,senha);
+  }
+
   public login(email:string, senha:string):Promise<firebase.auth.UserCredential>{
     return this.auth.signInWithEmailAndPassword(email,senha);
   }
@@ -23,5 +27,13 @@ export class AuthenticationService {
 
   public logout():Promise<void>{
     return this.auth.signOut();
+  }
+
+  public getUsuario():Promise<firebase.User|null>{
+    return this.auth.currentUser;
+  }
+
+  public atualizarUsuario(usuario:firebase.User|null){
+    return this.auth.updateCurrentUser(usuario);
   }
 }
